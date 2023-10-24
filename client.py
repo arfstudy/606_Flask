@@ -1,5 +1,6 @@
 import requests
 
+
 print('\n  Получен ответ от сервера:')
 
 

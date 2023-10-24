@@ -1,6 +1,7 @@
 from typing import Type, Union
 
 import pydantic
+# from app import app
 from flask import Flask, jsonify, request
 from flask.views import MethodView
 
@@ -59,8 +60,9 @@ class AdvertisementViews(MethodView):
         with Session() as session:
             new_advert = Advertisement(**validated_data)
             session.add(new_advert)
+            res = jsonify({"id": new_advert.id, "title": new_advert.title})
             session.commit()
-        return jsonify({"id": new_advert.id, "title": new_advert.title,
+            return jsonify({"id": new_advert.id, "title": new_advert.title,
                         "creation_time": new_advert.creation_time.isoformat(), "owner": new_advert.owner})
 
     def patch(self, advert_id: int):
@@ -71,7 +73,7 @@ class AdvertisementViews(MethodView):
                 setattr(advert, field, value)
             session.add(advert)
             session.commit()
-        return jsonify({"id": advert.id, "title": advert.title,
+            return jsonify({"id": advert.id, "title": advert.title,
                         "creation_time": advert.creation_time.isoformat(), "owner": advert.owner})
 
     def delete(self, advert_id: int):
@@ -79,14 +81,14 @@ class AdvertisementViews(MethodView):
             advert = get_advert(session, advert_id)
             session.delete(advert)
             session.commit()
-        return jsonify({f"Status '{advert_id}':": "Delete"})
+        return jsonify({"Status": f"id={advert_id} Delete"})
 
 
 advert_view = AdvertisementViews.as_view(name="adverts")
 
-firstapp.add_url_rule(rule="/advert/<int:advert_id>", view_func=advert_view, methods=["GET", "PATCH", "DELETE"])
+firstapp.add_url_rule("/advert/<int:advert_id>", view_func=advert_view, methods=["GET", "PATCH", "DELETE"])
 
-firstapp.add_url_rule(rule="/advert", view_func=advert_view, methods=["POST"])
+firstapp.add_url_rule("/advert", view_func=advert_view, methods=["POST"])
 
 if __name__ == "__main__":
     firstapp.run()

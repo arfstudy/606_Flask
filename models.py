@@ -5,16 +5,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Настройки подключения к базе данных
-PG_DB = "board"
+PG_DB = "app"
 PG_USER = "app"
 PG_PASSWORD = "1234"
 PG_HOST = "127.0.0.1"
 PG_PORT = 5431
 PG_DNS = f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}"
 
-engine = create_engine(url=PG_DNS)    # Подключение к базе по заданному URL-базы (DNS)
+engine = create_engine(PG_DNS)    # Подключение к базе по заданному URL-базы (DNS)
 
-register(func=engine.dispose)     # По окончании работы приложения наша БД должна отключиться
+register(engine.dispose)     # По окончании работы приложения наша БД должна отключиться
 
 Session = sessionmaker(bind=engine)
 Base = declarative_base(bind=engine)
